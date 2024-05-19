@@ -4,21 +4,22 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class PoblacionBacterias implements Serializable {
-    private static final long serialVersionUID = 1L;
     private String nombre;
     private Date fechaInicio;
     private Date fechaFin;
     private int numBacteriasIniciales;
     private int temperatura;
     private String condicionesLuminosidad;
-    private int dosisComidaInicial; // en microgramos
+    private int dosisComidaInicial;
     private int diaIncrementoComida;
     private int comidaDiaIncremento;
     private int comidaFinalDia;
+    private String tipoPatronComida;
 
     public PoblacionBacterias(String nombre, Date fechaInicio, Date fechaFin, int numBacteriasIniciales,
                               int temperatura, String condicionesLuminosidad, int dosisComidaInicial,
-                              int diaIncrementoComida, int comidaDiaIncremento, int comidaFinalDia) {
+                              int diaIncrementoComida, int comidaDiaIncremento, int comidaFinalDia,
+                              String tipoPatronComida) {
         this.nombre = nombre;
         this.fechaInicio = fechaInicio;
         this.fechaFin = fechaFin;
@@ -29,6 +30,7 @@ public class PoblacionBacterias implements Serializable {
         this.diaIncrementoComida = diaIncrementoComida;
         this.comidaDiaIncremento = comidaDiaIncremento;
         this.comidaFinalDia = comidaFinalDia;
+        this.tipoPatronComida = tipoPatronComida;
     }
 
     // Getters y setters
@@ -112,6 +114,42 @@ public class PoblacionBacterias implements Serializable {
         this.comidaFinalDia = comidaFinalDia;
     }
 
+    // Métodos para cálculos relacionados con la dosis de comida
+    public int getDuracion() {
+        return (int) ((fechaFin.getTime() - fechaInicio.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+    }
+
+    public int calcularComidaDia(int dia) {
+        if (dia < 1 || dia > 30) {
+            throw new IllegalArgumentException("Día inválido");
+        }
+
+        int cantidadComida = 0;
+
+        switch (tipoPatronComida) {
+            case "Lineal Incremento/Decremento":
+                if (dia <= diaIncrementoComida) {
+                    cantidadComida = dosisComidaInicial + (dia - 1) * (comidaDiaIncremento - dosisComidaInicial) / diaIncrementoComida;
+                } else {
+                    cantidadComida = comidaDiaIncremento + (dia - diaIncrementoComida) * (comidaFinalDia - comidaDiaIncremento) / (30 - diaIncrementoComida);
+                }
+                break;
+
+            case "Constante":
+                cantidadComida = dosisComidaInicial;
+                break;
+
+            case "Lineal Incremento":
+                cantidadComida = dosisComidaInicial + (dia - 1) * (comidaFinalDia - dosisComidaInicial) / 29;
+                break;
+
+            case "Intermitente":
+                cantidadComida = (dia % 2 == 1) ? dosisComidaInicial : 0;
+                break;
+        }
+
+        return Math.min(cantidadComida, 300000);
+    }
     @Override
     public String toString() {
         return "Nombre: " + nombre +
@@ -123,28 +161,7 @@ public class PoblacionBacterias implements Serializable {
                 ", Dosis de Comida Inicial: " + dosisComidaInicial +
                 ", Día de Incremento de Comida: " + diaIncrementoComida +
                 ", Comida por Día de Incremento: " + comidaDiaIncremento +
-                ", Comida Final del Día " + (getDuracion() - 1) + ": " + comidaFinalDia;
-    }
-
-    // Métodos para cálculos relacionados con la dosis de comida
-    public int getDuracion() {
-        return (int) ((fechaFin.getTime() - fechaInicio.getTime()) / (1000 * 60 * 60 * 24)) + 1;
-    }
-
-    public int calcularComidaDia(int dia) {
-        int duracion = getDuracion();
-        if (dia < 1 || dia > duracion) {
-            throw new IllegalArgumentException("Día inválido");
-        }
-
-        int cantidadComida;
-        if (dia <= diaIncrementoComida) {
-            cantidadComida = dosisComidaInicial + (dia - 1) * (comidaDiaIncremento - dosisComidaInicial) / diaIncrementoComida;
-        } else {
-            cantidadComida = comidaDiaIncremento + (dia - diaIncrementoComida) * (comidaFinalDia - comidaDiaIncremento) / (duracion - diaIncrementoComida);
-        }
-
-        // Asegurar que la cantidad de comida no sea mayor que 300,000 microgramos
-        return Math.min(cantidadComida, 300000);
+                ", Comida Final del Día: : " + comidaFinalDia;
+                ", Tipo de Patrón de Comida: " + tipoPatronComida;
     }
 }

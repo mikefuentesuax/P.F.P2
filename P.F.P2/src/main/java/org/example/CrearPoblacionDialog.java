@@ -19,12 +19,13 @@ public class CrearPoblacionDialog extends JDialog {
     private JTextField comidaIncrementoField;
     private JTextField comidaDiaField;
     private JTextField comidaFinalField;
+    private JComboBox<String> tipoPatronComidaBox;
     private boolean confirmed;
     private SimpleDateFormat dateFormat;
 
     public CrearPoblacionDialog(JFrame parentFrame) {
         super(parentFrame, "Crear Nueva Población de Bacterias", true);
-        setLayout(new GridLayout(11, 2));
+        setLayout(new GridLayout(13, 2));
 
         dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -38,6 +39,8 @@ public class CrearPoblacionDialog extends JDialog {
         comidaIncrementoField = new JTextField();
         comidaDiaField = new JTextField();
         comidaFinalField = new JTextField();
+        tipoPatronComidaBox = new JComboBox<>(new String[]{"Lineal Incremento/Decremento", "Constante", "Lineal Incremento", "Intermitente"});
+
 
         add(new JLabel("Nombre:"));
         add(nombreField);
@@ -59,6 +62,8 @@ public class CrearPoblacionDialog extends JDialog {
         add(comidaDiaField);
         add(new JLabel("Comida Final (µg):"));
         add(comidaFinalField);
+        add(new JLabel("Tipo de Patrón de Comida:"));
+        add(tipoPatronComidaBox);
 
         JButton btnConfirm = new JButton("Confirmar");
         btnConfirm.addActionListener(new ActionListener() {
@@ -104,13 +109,12 @@ public class CrearPoblacionDialog extends JDialog {
             int diaIncremento = Integer.parseInt(comidaIncrementoField.getText());
             int comidaDia = Integer.parseInt(comidaDiaField.getText());
             int comidaFinal = Integer.parseInt(comidaFinalField.getText());
+            String tipoPatronComida = (String) tipoPatronComidaBox.getSelectedItem();
 
-            return new PoblacionBacterias(nombre, fechaInicio, fechaFin, numBacteriasIniciales, temperatura, luminosidad, comidaInicial, diaIncremento, comidaDia, comidaFinal);
-        } catch (ParseException e) {
-            JOptionPane.showMessageDialog(this, "Por favor, ingrese las fechas en el formato correcto (yyyy-MM-dd).");
-            return null;
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Por favor, ingrese todos los valores numéricos correctamente.");
+
+            return new PoblacionBacterias(nombre, fechaInicio, fechaFin, numBacteriasIniciales, temperatura, luminosidad, comidaInicial, diaIncremento, comidaDia, comidaFinal, tipoPatronComida);
+        } catch (NumberFormatException | ParseException e) {
+            JOptionPane.showMessageDialog(this, "Por favor, ingrese todos los valores correctamente.");
             return null;
         }
     }
