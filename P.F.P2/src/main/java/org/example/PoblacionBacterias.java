@@ -2,6 +2,7 @@ package org.example;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.lang.Comparable;
 
 public class PoblacionBacterias implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -137,28 +138,22 @@ public class PoblacionBacterias implements Serializable {
         int cantidadComida = 0;
 
         switch (tipoPatronComida) {
-            case "Lineal Incremento/Decremento":
+            case "Constante":
+                cantidadComida = dosisComidaInicial;
+                break;
+            case "Lineal":
                 if (dia <= diaIncrementoComida) {
                     cantidadComida = dosisComidaInicial + (dia - 1) * (comidaDiaIncremento - dosisComidaInicial) / diaIncrementoComida;
                 } else {
                     cantidadComida = comidaDiaIncremento + (dia - diaIncrementoComida) * (comidaFinalDia - comidaDiaIncremento) / (30 - diaIncrementoComida);
                 }
                 break;
-
-            case "Constante":
-                cantidadComida = dosisComidaInicial;
+            case "Incremento":
+                cantidadComida = dosisComidaInicial + (dia - 1) * (comidaFinalDia - dosisComidaInicial) / 30;
                 break;
-
-            case "Lineal Incremento":
-                cantidadComida = dosisComidaInicial + (dia - 1) * (comidaFinalDia - dosisComidaInicial) / 29;
-                break;
-
             case "Intermitente":
                 cantidadComida = (dia % 2 == 1) ? dosisComidaInicial : 0;
                 break;
-
-            default:
-                throw new IllegalArgumentException("Tipo de patrón de comida desconocido: " + tipoPatronComida);
         }
 
         return Math.min(cantidadComida, 300000);
@@ -174,7 +169,25 @@ public class PoblacionBacterias implements Serializable {
                 ", Dosis de Comida Inicial: " + dosisComidaInicial +
                 ", Día de Incremento de Comida: " + diaIncrementoComida +
                 ", Comida por Día de Incremento: " + comidaDiaIncremento +
-                ", Comida Final del Día: : " + comidaFinalDia;
+                ", Comida Final del Día: : " + comidaFinalDia +
                 ", Tipo de Patrón de Comida: " + tipoPatronComida;
+    }
+
+    @Override
+    public int compareTo(PoblacionBacterias otraPoblacion) {
+        // Comparación por fecha de inicio
+        int comparacionFecha = this.fechaInicio.compareTo(otraPoblacion.fechaInicio);
+        if (comparacionFecha != 0) {
+            return comparacionFecha;
+        }
+
+        // Comparación por nombre
+        int comparacionNombre = this.nombre.compareTo(otraPoblacion.nombre);
+        if (comparacionNombre != 0) {
+            return comparacionNombre;
+        }
+
+        // Comparación por número de bacterias
+        return Integer.compare(this.numBacteriasIniciales, otraPoblacion.numBacteriasIniciales);
     }
 }
