@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class PoblacionBacterias implements Serializable {
+    private static final long serialVersionUID = 1L;
     private String nombre;
     private Date fechaInicio;
     private Date fechaFin;
