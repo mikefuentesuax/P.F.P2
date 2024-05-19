@@ -51,13 +51,13 @@ public class CrearPoblacionDialog extends JDialog {
         add(temperaturaField);
         add(new JLabel("Luminosidad:"));
         add(luminosidadBox);
-        add(new JLabel("Comida Inicial:"));
+        add(new JLabel("Comida Inicial (µg):"));
         add(comidaInicialField);
         add(new JLabel("Día hasta incremento:"));
         add(comidaIncrementoField);
-        add(new JLabel("Comida en día de incremento:"));
+        add(new JLabel("Comida en día de incremento (µg):"));
         add(comidaDiaField);
-        add(new JLabel("Comida Final:"));
+        add(new JLabel("Comida Final (µg):"));
         add(comidaFinalField);
 
         JButton btnConfirm = new JButton("Confirmar");
@@ -106,8 +106,11 @@ public class CrearPoblacionDialog extends JDialog {
             int comidaFinal = Integer.parseInt(comidaFinalField.getText());
 
             return new PoblacionBacterias(nombre, fechaInicio, fechaFin, numBacteriasIniciales, temperatura, luminosidad, comidaInicial, diaIncremento, comidaDia, comidaFinal);
-        } catch (NumberFormatException | ParseException e) {
-            JOptionPane.showMessageDialog(this, "Por favor, ingrese todos los valores correctamente.");
+        } catch (ParseException e) {
+            JOptionPane.showMessageDialog(this, "Por favor, ingrese las fechas en el formato correcto (yyyy-MM-dd).");
+            return null;
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Por favor, ingrese todos los valores numéricos correctamente.");
             return null;
         }
     }
