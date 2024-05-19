@@ -5,6 +5,7 @@ import java.util.Date;
 
 public class PoblacionBacterias implements Serializable {
     private static final long serialVersionUID = 1L;
+
     private String nombre;
     private Date fechaInicio;
     private Date fechaFin;
@@ -115,6 +116,14 @@ public class PoblacionBacterias implements Serializable {
         this.comidaFinalDia = comidaFinalDia;
     }
 
+    public String getTipoPatronComida() {
+        return tipoPatronComida;
+    }
+
+    public void setTipoPatronComida(String tipoPatronComida) {
+        this.tipoPatronComida = tipoPatronComida;
+    }
+
     // Métodos para cálculos relacionados con la dosis de comida
     public int getDuracion() {
         return (int) ((fechaFin.getTime() - fechaInicio.getTime()) / (1000 * 60 * 60 * 24)) + 1;
@@ -147,6 +156,9 @@ public class PoblacionBacterias implements Serializable {
             case "Intermitente":
                 cantidadComida = (dia % 2 == 1) ? dosisComidaInicial : 0;
                 break;
+
+            default:
+                throw new IllegalArgumentException("Tipo de patrón de comida desconocido: " + tipoPatronComida);
         }
 
         return Math.min(cantidadComida, 300000);
