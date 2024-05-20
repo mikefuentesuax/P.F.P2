@@ -173,21 +173,5 @@ public class PoblacionBacterias implements Serializable {
                 ", Tipo de Patrón de Comida: " + tipoPatronComida;
     }
 
-    @Override
-    public int compareTo(PoblacionBacterias otraPoblacion) {
-        // Comparación por fecha de inicio
-        int comparacionFecha = this.fechaInicio.compareTo(otraPoblacion.fechaInicio);
-        if (comparacionFecha != 0) {
-            return comparacionFecha;
-        }
 
-        // Comparación por nombre
-        int comparacionNombre = this.nombre.compareTo(otraPoblacion.nombre);
-        if (comparacionNombre != 0) {
-            return comparacionNombre;
-        }
-
-        // Comparación por número de bacterias
-        return Integer.compare(this.numBacteriasIniciales, otraPoblacion.numBacteriasIniciales);
-    }
 }
