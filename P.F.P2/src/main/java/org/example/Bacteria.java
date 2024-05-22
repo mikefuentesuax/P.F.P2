@@ -113,10 +113,10 @@ public class Bacteria {
         int nuevaColumna = columna;
 
         switch (direccion) {
-            case 0: nuevaFila = fila - 1; break; // Arriba
-            case 1: nuevaFila = fila + 1; break; // Abajo
-            case 2: nuevaColumna = columna - 1; break; // Izquierda
-            case 3: nuevaColumna = columna + 1; break; // Derecha
+            case 0: nuevaFila -= 1; break; // Mover arriba
+            case 1: nuevaColumna += 1; break; // Mover derecha
+            case 2: nuevaFila += 1; break; // Mover abajo
+            case 3: nuevaColumna -= 1; break; // Mover izquierda
         }
 
         if (nuevaFila >= 0 && nuevaFila < plato.length && nuevaColumna >= 0 && nuevaColumna < plato[0].length) {
